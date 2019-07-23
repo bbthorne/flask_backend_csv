@@ -51,7 +51,7 @@ def api_createQ():
 This endpoint allows deletion of a question from code_challenge_question_dump.csv.
 Input format "arg0 + arg1?".
 """
-@app.route('/api/deleteQ', methods=['DELETE'])
+@app.route('/api/deleteQ', methods=['POST'])
 def api_deleteQ():
     try:
         dataManipulator.delete_from(request.data.decode('utf-8'))

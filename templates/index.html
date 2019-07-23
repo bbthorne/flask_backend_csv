@@ -1,0 +1,144 @@
+<!Doctype html>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flask App for CSV</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+  <div id="inputfields">
+  <h2 id="welcome">Welcome</h2>
+  <div id="inputField">
+ 		<input id="maintextbox" type="text" placeholder="What would you like to do?">
+    <input id = "edittextbox" type="text" placeholder="New question: 'arg1 op arg2 = ans, dist1, dist2, ..., distn'">
+  </div>
+ 	<div>
+ 		<h3 id="options-button" onclick="options()">Options</h3>
+ 		<div id="options">
+ 			<div class="option">
+ 				<h3 onClick="edit_operation('CREATE',[])">Create Question</h3>
+ 			</div>
+ 			<div class="option">
+ 				<h3 onClick="edit_operation('DELETE',[])">Delete Question</h3>
+ 			</div>
+ 			<div class="option">
+ 				<h3 onClick="edit_operation('EDIT',[])">Edit Question</h3>
+ 			</div>
+ 		<div class="option">
+ 			<h3>Filter Questions</h3>
+ 			<div id="sub4" class="sublist">
+        <div class="dub-sub">
+          <h5>By Question</h5>
+          <div class="second-sublist">
+            <h4 onClick="options_selection('FILTER', ['FIND', 'question'])">Search </h4>
+            <h4 onClick="options_selection('FILTER', ['GT', 'question'])">Greater Than</h4>
+            <h4 onClick="options_selection('FILTER', ['LT', 'question'])">Less Than</h4>
+          </div>
+        </div>
+        <div class="dub-sub">
+          <h5>By Answer</h5>
+          <div class="second-sublist">
+            <h4 onClick="options_selection('FILTER', ['FIND', 'answer'])">Search </h4>
+            <h4 onClick="options_selection('FILTER', ['GT', 'answer'])">Greater Than</h4>
+            <h4 onClick="options_selection('FILTER', ['LT', 'answer'])">Less Than</h4>
+          </div>
+        </div>
+ 			</div>
+    </div>
+      <div class="option">
+        <h3>Sort Questions</h3>
+        <div id="sub5" class="sublist">
+          <div class="dub-sub">
+            <h5>By Question</h5>
+            <div class="second-sublist">
+              <h4 onClick="options_selection('SORT', ['LT', 'question'])">Ascending </h4>
+              <h4 onClick="options_selection('SORT', ['GT', 'question'])">Descending</h4>
+            </div>
+          </div>
+          <div class="dub-sub">
+            <h5>By Answer</h5>
+            <div class="second-sublist">
+              <h4 onClick="options_selection('SORT', ['LT', 'answer'])">Ascending </h4>
+              <h4 onClick="options_selection('SORT', ['GT', 'answer'])">Descending</h4>
+            </div>
+          </div>
+ 			  </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <button class="submission" id="submit" onclick="handleInput()" type="text">Submit</button>
+  <button class="submission" id = "viewall" onclick="viewall()" type="text">View All</button>
+  <div id="results">
+  </div>
+  <script src="{{url_for('static', filename='InputHandler.js')}}"></script>
+  <script type="text/javascript">
+    inputHandler = new InputHandler();
+    on           = false;
+
+  	function options() {
+      var options = document.getElementById("options");
+      if (!on) {
+  		  options.style.display = "block";
+        on = true;
+      } else {
+        on = false;
+        options.style.display = 'none';
+      }
+  	}
+
+    function viewall() {
+      inputHandler.view_all();
+    }
+
+    function edit_operation(operation, options) {
+      inputHandler.edit_operation(operation);
+      edit_inputUI(operation, options);
+    }
+
+    function edit_inputUI(op, options) {
+      switch (op) {
+        case "CREATE":
+          document.getElementById("maintextbox").placeholder = "Create a question: 'arg1 op arg2 = ans, dist1, dist2, ..., distn'";
+          break;
+        case "DELETE":
+          document.getElementById("maintextbox").placeholder = "Delete a question: 'arg1 op arg2'";
+          break;
+        case "EDIT":
+          document.getElementById("maintextbox").placeholder = "The question you'd like to edit: 'arg1 op arg2'";
+          document.getElementById("edittextbox").style.display = "block";
+          break;
+        case "FILTER":
+          if (options[1] == "answer") {
+            document.getElementById("maintextbox").placeholder = "Enter an answer to filter";
+          } else {
+            document.getElementById("maintextbox").placeholder = "Enter a question to filter: 'arg1 op arg2'";
+          }
+          break;
+        case "SORT":
+          document.getElementById("maintextbox").placeholder = "Sort: No need to enter anything this time!";
+          break;
+      }
+      if (op != "EDIT") {
+        document.getElementById("edittextbox").style.display = 'none';
+      }
+    }
+
+    function options_selection(operation, options) {
+      inputHandler.edit_options(options);
+      edit_operation(operation, options);
+    }
+
+    function handleInput() {
+      inputHandler.edit_userInput(document.getElementById("maintextbox").value);
+      if (inputHandler.operation == "EDIT") {
+        inputHandler.edit_options([document.getElementById("edittextbox").value]);
+      }
+      inputHandler.handle_input();
+      document.getElementById("maintextbox").placeholder = 'What would you like to do?';
+    }
+  </script>
+</body>
+</html>
